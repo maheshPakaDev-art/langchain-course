@@ -1,0 +1,42 @@
+from dotenv import load_dotenv
+import os
+
+from langchain_core.prompts import PromptTemplate
+from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
+
+load_dotenv()
+
+def main():
+    print("Hello from langchain-course!")
+information ="""
+    Uppalapati Venkata Suryanarayana Prabhas Raju (born 23 October 1979), known mononymously as Prabhas (pronounced [pɾabʱaːs]), is an Indian actor who predominantly works in Telugu cinema.[4] He is one of the highest-paid actors in Indian cinema and has been featured in Forbes India's Celebrity 100 list since 2015.[9] Referred to in the media as Rebel Star, he has appeared in over 24 films, and has received seven Filmfare Awards nominations, a Nandi Award, and a SIIMA Award.[10][11]
+
+Prabhas made his acting debut with the drama Eeswar (2002) and later attained his breakthrough with the action romance Varsham (2004). He went on to act in other commercially successful films such as Chatrapathi (2005), Bujjigadu (2008), Billa (2009), Darling (2010), Mr. Perfect (2011), and Mirchi (2013), winning the Nandi Award for Best Actor for his performance in the lattermost.[12][13]
+
+Prabhas then starred in a dual role in the blockbuster epic action duology Baahubali: The Beginning (2015) and its sequel Baahubali 2: The Conclusion (2017), with the latter emerging as the highest-grossing Indian film of all time at that point. Prabhas became the first pan-Indian star and earned international recognition for his performance in the films.[a] He has since starred in the action thriller Saaho (2019), the action drama Salaar: Part 1 – Ceasefire (2023), and the science fiction film Kalki 2898 AD (2024), all of which rank among the highest-grossing Indian films.[18][19]
+
+Prabhas is the first Indian actor to have a film gross over ₹1000 crore worldwide. He is the only Indian actor to have six films with a worldwide gross opening of over ₹100 crore. He is also the only South Indian actor with six films that have crossed the ₹100 crore net mark in the Hindi market. Additionally, he is the first South Indian actor to receive a wax sculpture at a Madame Tussauds' museum.
+    """
+summary_template = """
+Given the info {information} about a person i want you to create
+1. A short Summary
+2. Two interesting facts about them
+"""
+
+summary_prompt_template = PromptTemplate(
+    input_variables=["information"],template=summary_template
+)
+
+# llm = ChatOpenAI(temperature=0,model="gpt-5")
+llm = ChatOllama(temperature=0,model="gemma4:e4b")
+chain = summary_prompt_template | llm
+
+
+response = chain.invoke(input={"information": information})
+
+print(response.content)
+
+
+if __name__ == "__main__":
+    main()
